@@ -21,6 +21,7 @@ export type Database = {
           description: string
           id: string
           is_active: boolean
+          player_assignment_id: string | null
           player_id: string | null
           staff_id: string | null
         }
@@ -30,6 +31,7 @@ export type Database = {
           description: string
           id?: string
           is_active?: boolean
+          player_assignment_id?: string | null
           player_id?: string | null
           staff_id?: string | null
         }
@@ -39,10 +41,18 @@ export type Database = {
           description?: string
           id?: string
           is_active?: boolean
+          player_assignment_id?: string | null
           player_id?: string | null
           staff_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "ailments_player_assignment_id_fkey"
+            columns: ["player_assignment_id"]
+            isOneToOne: false
+            referencedRelation: "player_category_assignments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "ailments_player_id_fkey"
             columns: ["player_id"]
@@ -134,6 +144,7 @@ export type Database = {
           description: string | null
           id: string
           pain_level: number
+          player_assignment_id: string | null
           player_id: string | null
           staff_id: string | null
         }
@@ -143,6 +154,7 @@ export type Database = {
           description?: string | null
           id?: string
           pain_level: number
+          player_assignment_id?: string | null
           player_id?: string | null
           staff_id?: string | null
         }
@@ -152,10 +164,18 @@ export type Database = {
           description?: string | null
           id?: string
           pain_level?: number
+          player_assignment_id?: string | null
           player_id?: string | null
           staff_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "body_pain_responses_player_assignment_id_fkey"
+            columns: ["player_assignment_id"]
+            isOneToOne: false
+            referencedRelation: "player_category_assignments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "body_pain_responses_player_id_fkey"
             columns: ["player_id"]
@@ -574,6 +594,7 @@ export type Database = {
           id: string
           injury_description: string
           is_active: boolean
+          player_assignment_id: string | null
           player_id: string | null
           recommended_treatment: string
           staff_id: string | null
@@ -584,6 +605,7 @@ export type Database = {
           id?: string
           injury_description: string
           is_active?: boolean
+          player_assignment_id?: string | null
           player_id?: string | null
           recommended_treatment: string
           staff_id?: string | null
@@ -594,11 +616,19 @@ export type Database = {
           id?: string
           injury_description?: string
           is_active?: boolean
+          player_assignment_id?: string | null
           player_id?: string | null
           recommended_treatment?: string
           staff_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "injury_records_player_assignment_id_fkey"
+            columns: ["player_assignment_id"]
+            isOneToOne: false
+            referencedRelation: "player_category_assignments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "injury_records_player_id_fkey"
             columns: ["player_id"]
@@ -852,6 +882,7 @@ export type Database = {
           document_url: string
           file_size: number | null
           id: string
+          player_assignment_id: string | null
           player_id: string | null
           staff_id: string | null
           updated_at: string
@@ -864,6 +895,7 @@ export type Database = {
           document_url: string
           file_size?: number | null
           id?: string
+          player_assignment_id?: string | null
           player_id?: string | null
           staff_id?: string | null
           updated_at?: string
@@ -876,12 +908,20 @@ export type Database = {
           document_url?: string
           file_size?: number | null
           id?: string
+          player_assignment_id?: string | null
           player_id?: string | null
           staff_id?: string | null
           updated_at?: string
           uploaded_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "medical_documents_player_assignment_id_fkey"
+            columns: ["player_assignment_id"]
+            isOneToOne: false
+            referencedRelation: "player_category_assignments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "medical_documents_player_id_fkey"
             columns: ["player_id"]
@@ -1211,6 +1251,7 @@ export type Database = {
           document_url: string
           file_size: number | null
           id: string
+          player_assignment_id: string | null
           player_id: string
           uploaded_by: string | null
         }
@@ -1221,6 +1262,7 @@ export type Database = {
           document_url: string
           file_size?: number | null
           id?: string
+          player_assignment_id?: string | null
           player_id: string
           uploaded_by?: string | null
         }
@@ -1231,10 +1273,18 @@ export type Database = {
           document_url?: string
           file_size?: number | null
           id?: string
+          player_assignment_id?: string | null
           player_id?: string
           uploaded_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "psychological_documents_player_assignment_id_fkey"
+            columns: ["player_assignment_id"]
+            isOneToOne: false
+            referencedRelation: "player_category_assignments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "psychological_documents_player_id_fkey"
             columns: ["player_id"]
@@ -1318,6 +1368,7 @@ export type Database = {
           id: string
           internal_load: number
           minutes: number
+          player_assignment_id: string | null
           player_id: string | null
           rpe_score: number
           staff_id: string | null
@@ -1327,6 +1378,7 @@ export type Database = {
           id?: string
           internal_load: number
           minutes: number
+          player_assignment_id?: string | null
           player_id?: string | null
           rpe_score: number
           staff_id?: string | null
@@ -1336,11 +1388,19 @@ export type Database = {
           id?: string
           internal_load?: number
           minutes?: number
+          player_assignment_id?: string | null
           player_id?: string | null
           rpe_score?: number
           staff_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "rpe_responses_player_assignment_id_fkey"
+            columns: ["player_assignment_id"]
+            isOneToOne: false
+            referencedRelation: "player_category_assignments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "rpe_responses_player_id_fkey"
             columns: ["player_id"]
@@ -1781,6 +1841,7 @@ export type Database = {
           fatigue_level: number | null
           id: string
           muscle_soreness: number | null
+          player_assignment_id: string | null
           player_id: string | null
           response_date: string
           sleep_quality: number | null
@@ -1792,6 +1853,7 @@ export type Database = {
           fatigue_level?: number | null
           id?: string
           muscle_soreness?: number | null
+          player_assignment_id?: string | null
           player_id?: string | null
           response_date?: string
           sleep_quality?: number | null
@@ -1803,6 +1865,7 @@ export type Database = {
           fatigue_level?: number | null
           id?: string
           muscle_soreness?: number | null
+          player_assignment_id?: string | null
           player_id?: string | null
           response_date?: string
           sleep_quality?: number | null
@@ -1810,6 +1873,13 @@ export type Database = {
           stress_level?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "wellness_responses_player_assignment_id_fkey"
+            columns: ["player_assignment_id"]
+            isOneToOne: false
+            referencedRelation: "player_category_assignments"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "wellness_responses_player_id_fkey"
             columns: ["player_id"]
