@@ -362,17 +362,31 @@ export default function MedicalStaff() {
       const isYouthCategory = categories?.some(cat => cat.id === selectedCategory && 'season_id' in cat);
       const isSeniorCategory = categories?.some(cat => cat.id === selectedCategory && 'senior_season_id' in cat);
       
-      let query = supabase
-        .from("players")
-        .select("*");
+      // Get all player_ids that have assignments for this category
+      const { data: assignments, error: assignmentsError } = await supabase
+        .from("player_category_assignments")
+        .select("player_id")
+        .or(
+          isYouthCategory 
+            ? `category_id.eq.${selectedCategory}`
+            : `senior_category_id.eq.${selectedCategory}`
+        );
       
-      if (isYouthCategory) {
-        query = query.eq("category_id", selectedCategory);
-      } else if (isSeniorCategory) {
-        query = query.eq("senior_category_id", selectedCategory);
+      if (assignmentsError) {
+        console.error("Error fetching assignments:", assignmentsError);
+        return [];
       }
       
-      const { data, error } = await query.order("name");
+      const playerIds = assignments?.map(a => a.player_id) || [];
+      
+      if (playerIds.length === 0) return [];
+      
+      // Get all players that have had assignments in this category
+      const { data, error } = await supabase
+        .from("players")
+        .select("*")
+        .in("id", playerIds)
+        .order("name");
       
       if (error) {
         toast({
