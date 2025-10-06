@@ -7,20 +7,30 @@ import { useState } from "react";
 
 interface BodyPainResponsesListProps {
   playerId: string;
+  categoryId: string;
 }
 
-export function BodyPainResponsesList({ playerId }: BodyPainResponsesListProps) {
+export function BodyPainResponsesList({ playerId, categoryId }: BodyPainResponsesListProps) {
   const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set());
 
   const { data: responses = [], isLoading, refetch } = useQuery({
-    queryKey: ["body-pain-responses", playerId],
+    queryKey: ["body-pain-responses", playerId, categoryId],
     queryFn: async () => {
-      // Get the active assignment for this player
+      // Determine if it's a youth or senior category
+      const { data: youthCategory } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('id', categoryId)
+        .maybeSingle();
+
+      const isYouthCategory = !!youthCategory;
+
+      // Get the assignment for this player in this specific category
       const { data: assignment } = await supabase
         .from('player_category_assignments')
         .select('id')
         .eq('player_id', playerId)
-        .is('end_date', null)
+        .eq(isYouthCategory ? 'category_id' : 'senior_category_id', categoryId)
         .maybeSingle();
 
       if (!assignment) {
@@ -36,7 +46,7 @@ export function BodyPainResponsesList({ playerId }: BodyPainResponsesListProps) 
       if (error) throw error;
       return data;
     },
-    enabled: !!playerId,
+    enabled: !!playerId && !!categoryId,
     refetchOnWindowFocus: true,
   });
 

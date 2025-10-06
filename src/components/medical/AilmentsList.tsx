@@ -28,10 +28,11 @@ import { usePermissions } from "@/hooks/use-permissions";
 
 interface AilmentsListProps {
   playerId: string;
+  categoryId: string;
   hideStatusColumn?: boolean;
 }
 
-export function AilmentsList({ playerId, hideStatusColumn = false }: AilmentsListProps) {
+export function AilmentsList({ playerId, categoryId, hideStatusColumn = false }: AilmentsListProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedAilmentId, setSelectedAilmentId] = useState<string | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -42,15 +43,24 @@ export function AilmentsList({ playerId, hideStatusColumn = false }: AilmentsLis
 
 
   const { data: ailments = [], isLoading, isError } = useQuery({
-    queryKey: ["ailments", playerId],
+    queryKey: ["ailments", playerId, categoryId],
     queryFn: async () => {
       try {
-        // Get the active assignment for this player
+        // Determine if it's a youth or senior category
+        const { data: youthCategory } = await supabase
+          .from('categories')
+          .select('id')
+          .eq('id', categoryId)
+          .maybeSingle();
+
+        const isYouthCategory = !!youthCategory;
+
+        // Get the assignment for this player in this specific category
         const { data: assignment } = await supabase
           .from('player_category_assignments')
           .select('id')
           .eq('player_id', playerId)
-          .is('end_date', null)
+          .eq(isYouthCategory ? 'category_id' : 'senior_category_id', categoryId)
           .maybeSingle();
 
         if (!assignment) {

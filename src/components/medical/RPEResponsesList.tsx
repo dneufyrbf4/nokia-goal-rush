@@ -4,18 +4,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface RPEResponsesListProps {
   playerId: string;
+  categoryId: string;
 }
 
-export function RPEResponsesList({ playerId }: RPEResponsesListProps) {
+export function RPEResponsesList({ playerId, categoryId }: RPEResponsesListProps) {
   const { data: responses = [], isLoading } = useQuery({
-    queryKey: ["rpe-responses", playerId],
+    queryKey: ["rpe-responses", playerId, categoryId],
     queryFn: async () => {
-      // Get the active assignment for this player
+      // Determine if it's a youth or senior category
+      const { data: youthCategory } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('id', categoryId)
+        .maybeSingle();
+
+      const isYouthCategory = !!youthCategory;
+
+      // Get the assignment for this player in this specific category
       const { data: assignment } = await supabase
         .from('player_category_assignments')
         .select('id')
         .eq('player_id', playerId)
-        .is('end_date', null)
+        .eq(isYouthCategory ? 'category_id' : 'senior_category_id', categoryId)
         .maybeSingle();
 
       if (!assignment) {
@@ -31,7 +41,7 @@ export function RPEResponsesList({ playerId }: RPEResponsesListProps) {
       if (error) throw error;
       return data;
     },
-    enabled: !!playerId,
+    enabled: !!playerId && !!categoryId,
   });
 
   if (isLoading) return <div>Cargando respuestas...</div>;

@@ -33,21 +33,23 @@ export default function Medical() {
   const [showBodyModel, setShowBodyModel] = useState(false);
   const [showNewAilmentForm, setShowNewAilmentForm] = useState(false);
   const [currentPlayerId, setCurrentPlayerId] = useState<string | null>(null);
+  const [currentPlayerCategoryId, setCurrentPlayerCategoryId] = useState<string | null>(null);
   const location = useLocation();
 
-  // Obtener el player_id del usuario autenticado
+  // Obtener el player_id y category_id del usuario autenticado
   useEffect(() => {
     const getCurrentPlayer = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: player } = await supabase
           .from('players')
-          .select('id')
+          .select('id, category_id')
           .eq('user_id', user.id)
           .single();
         
         if (player) {
           setCurrentPlayerId(player.id);
+          setCurrentPlayerCategoryId(player.category_id);
         }
       }
     };
@@ -283,7 +285,7 @@ export default function Medical() {
                     Agregar nuevo registro
                   </Button>
                 </div>
-                <AilmentsList playerId={currentPlayerId || ""} hideStatusColumn={true} />
+                <AilmentsList playerId={currentPlayerId || ""} categoryId={currentPlayerCategoryId || ""} hideStatusColumn={true} />
               </div>
             </div>
 

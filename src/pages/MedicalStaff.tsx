@@ -1663,12 +1663,12 @@ export default function MedicalStaff() {
 
               <TabsContent value="wellness" className="bg-white rounded-lg shadow p-6">
                 <h2 className="text-xl font-semibold mb-4">Respuestas Wellness del Jugador</h2>
-                <WellnessResponsesList playerId={selectedPlayer} />
+                <WellnessResponsesList playerId={selectedPlayer} categoryId={selectedCategory} />
               </TabsContent>
 
               <TabsContent value="muscular" className="bg-white rounded-lg shadow p-6">
                 <h2 className="text-xl font-semibold mb-4">Respuestas de Dolor Corporal</h2>
-                <BodyPainResponsesList playerId={selectedPlayer} />
+                <BodyPainResponsesList playerId={selectedPlayer} categoryId={selectedCategory} />
               </TabsContent>
             </Tabs>
           </div>
@@ -1753,7 +1753,7 @@ export default function MedicalStaff() {
 
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold mb-4">Respuestas RPE del Jugador</h2>
-              <RPEResponsesList playerId={selectedPlayer} />
+              <RPEResponsesList playerId={selectedPlayer} categoryId={selectedCategory} />
             </div>
           </div>
         )}
@@ -1866,7 +1866,7 @@ export default function MedicalStaff() {
                     </Button>
                   )}
                 </div>
-                <InjuryRecordsList playerId={selectedPlayer} />
+                <InjuryRecordsList playerId={selectedPlayer} categoryId={selectedCategory} />
               </div>
             </div>
 
@@ -1999,7 +1999,7 @@ export default function MedicalStaff() {
                     </Button>
                   )}
                 </div>
-                <AilmentsList playerId={selectedPlayer} />
+                <AilmentsList playerId={selectedPlayer} categoryId={selectedCategory} />
               </div>
             </div>
 
@@ -2090,7 +2090,7 @@ export default function MedicalStaff() {
 
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold mb-4">Exámenes e informes médicos</h2>
-              <MedicalDocuments playerId={selectedPlayer} />
+              <MedicalDocuments playerId={selectedPlayer} categoryId={selectedCategory} />
             </div>
             {/* Sección psicológica removida de aquí: se moverá a su propia pestaña */}
           </div>
@@ -2163,7 +2163,7 @@ export default function MedicalStaff() {
 
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold mb-4">Evaluaciones psicológicas</h2>
-              <PsychologicalDocuments playerId={selectedPlayer} />
+              <PsychologicalDocuments playerId={selectedPlayer} categoryId={selectedCategory} />
             </div>
           </div>
         )}

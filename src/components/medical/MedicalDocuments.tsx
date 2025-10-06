@@ -16,9 +16,10 @@ import { useOrganizationTheme } from "@/hooks/use-organization-theme";
 
 interface MedicalDocumentsProps {
   playerId: string;
+  categoryId: string;
 }
 
-export function MedicalDocuments({ playerId }: MedicalDocumentsProps) {
+export function MedicalDocuments({ playerId, categoryId }: MedicalDocumentsProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const queryClient = useQueryClient();
@@ -26,14 +27,23 @@ export function MedicalDocuments({ playerId }: MedicalDocumentsProps) {
   const { getGradientClasses } = useOrganizationTheme();
 
   const { data: documents = [], isLoading } = useQuery({
-    queryKey: ["medical-documents", playerId],
+    queryKey: ["medical-documents", playerId, categoryId],
     queryFn: async () => {
-      // Get the active assignment for this player
+      // Determine if it's a youth or senior category
+      const { data: youthCategory } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('id', categoryId)
+        .maybeSingle();
+
+      const isYouthCategory = !!youthCategory;
+
+      // Get the assignment for this player in this specific category
       const { data: assignment } = await supabase
         .from('player_category_assignments')
         .select('id')
         .eq('player_id', playerId)
-        .is('end_date', null)
+        .eq(isYouthCategory ? 'category_id' : 'senior_category_id', categoryId)
         .maybeSingle();
 
       if (!assignment) {
@@ -57,7 +67,7 @@ export function MedicalDocuments({ playerId }: MedicalDocumentsProps) {
 
       return data;
     },
-    enabled: !!playerId,
+    enabled: !!playerId && !!categoryId,
   });
 
   const uploadMutation = useMutation({
