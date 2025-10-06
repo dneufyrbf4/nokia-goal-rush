@@ -2,94 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: 120 20% 15%;
-    --foreground: 120 5% 95%;
+    --background: 227 100% 98%;
+    --foreground: 222.2 84% 4.9%;
+    --background-celeste: 196 67% 45%;
 
-    --card: 120 15% 12%;
-    --card-foreground: 120 5% 95%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 120 15% 12%;
-    --popover-foreground: 120 5% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 120 60% 45%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 219 64% 33%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 120 20% 25%;
-    --secondary-foreground: 120 5% 95%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 120 15% 20%;
-    --muted-foreground: 120 5% 70%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 120 70% 50%;
-    --accent-foreground: 0 0% 0%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 120 20% 25%;
-    --input: 120 20% 25%;
-    --ring: 120 60% 45%;
-
-    --radius: 0rem;
-
-    --field-green: 120 60% 35%;
-    --field-dark: 120 60% 30%;
-    --retro-white: 0 0% 95%;
-    --retro-black: 0 0% 10%;
-
-    --sidebar-background: 120 20% 15%;
-    --sidebar-foreground: 120 5% 95%;
-    --sidebar-primary: 120 60% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 120 20% 25%;
-    --sidebar-accent-foreground: 120 5% 95%;
-    --sidebar-border: 120 20% 25%;
-    --sidebar-ring: 120 60% 45%;
-  }
-
-  .dark {
-    --background: 120 20% 15%;
-    --foreground: 120 5% 95%;
-
-    --card: 120 15% 12%;
-    --card-foreground: 120 5% 95%;
-
-    --popover: 120 15% 12%;
-    --popover-foreground: 120 5% 95%;
-
-    --primary: 120 60% 45%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 120 20% 25%;
-    --secondary-foreground: 120 5% 95%;
-
-    --muted: 120 15% 20%;
-    --muted-foreground: 120 5% 70%;
-
-    --accent: 120 70% 50%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 120 20% 25%;
-    --input: 120 20% 25%;
-    --ring: 120 60% 45%;
-    
-    --sidebar-background: 120 20% 15%;
-    --sidebar-foreground: 120 5% 95%;
-    --sidebar-primary: 120 60% 45%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 120 20% 25%;
-    --sidebar-accent-foreground: 120 5% 95%;
-    --sidebar-border: 120 20% 25%;
-    --sidebar-ring: 120 60% 45%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
   }
 }
 
@@ -97,27 +41,10 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Courier New', monospace;
-    image-rendering: pixelated;
+    @apply bg-background text-foreground font-rajdhani;
   }
 }
 
-@layer utilities {
-  .pixel-border {
-    box-shadow: 
-      2px 0 0 0 currentColor,
-      -2px 0 0 0 currentColor,
-      0 2px 0 0 currentColor,
-      0 -2px 0 0 currentColor;
-  }
-  
-  .retro-text {
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-}
+/* Sidebar collapse utility */
+[data-sidebar].sidebar-collapsed { display: none; }
