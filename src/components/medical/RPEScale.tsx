@@ -41,15 +41,29 @@ export function RPEScale({ onSubmit, playerId }: RPEScaleProps) {
 
     try {
       if (playerId) {
+        // Get the active assignment for this player
+        const { data: assignment } = await supabase
+          .from('player_category_assignments')
+          .select('id')
+          .eq('player_id', playerId)
+          .is('end_date', null)
+          .maybeSingle();
+
+        const insertData: any = {
+          player_id: playerId,
+          rpe_score: rpe,
+          minutes: minutes,
+          internal_load: internalLoad,
+        };
+
+        if (assignment) {
+          insertData.player_assignment_id = assignment.id;
+        }
+
         // Guardar en la base de datos
         const { error } = await supabase
           .from('rpe_responses')
-          .insert({
-            player_id: playerId,
-            rpe_score: rpe,
-            minutes: minutes,
-            internal_load: internalLoad,
-          });
+          .insert(insertData);
 
         if (error) throw error;
 

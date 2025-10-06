@@ -21,15 +21,27 @@ export function BodyPainSelector({ playerId, onSubmit }: BodyPainSelectorProps) 
   const handleSubmit = async () => {
     if (!selectedPart) return;
 
+    // Get the active assignment for this player
+    const { data: assignment } = await supabase
+      .from('player_category_assignments')
+      .select('id')
+      .eq('player_id', playerId)
+      .is('end_date', null)
+      .maybeSingle();
+
+    const insertData: any = {
+      player_id: playerId,
+      body_part: selectedPart.id,
+      pain_level: painLevel,
+    };
+
+    if (assignment) {
+      insertData.player_assignment_id = assignment.id;
+    }
+
     const { error } = await supabase
       .from("body_pain_responses")
-      .insert([
-        {
-          player_id: playerId,
-          body_part: selectedPart.id,
-          pain_level: painLevel,
-        },
-      ]);
+      .insert([insertData]);
 
     if (error) {
       toast({

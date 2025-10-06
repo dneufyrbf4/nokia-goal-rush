@@ -10,10 +10,22 @@ export function RPEResponsesList({ playerId }: RPEResponsesListProps) {
   const { data: responses = [], isLoading } = useQuery({
     queryKey: ["rpe-responses", playerId],
     queryFn: async () => {
+      // Get the active assignment for this player
+      const { data: assignment } = await supabase
+        .from('player_category_assignments')
+        .select('id')
+        .eq('player_id', playerId)
+        .is('end_date', null)
+        .maybeSingle();
+
+      if (!assignment) {
+        return [];
+      }
+
       const { data, error } = await supabase
         .from('rpe_responses')
         .select('*')
-        .eq('player_id', playerId)
+        .eq('player_assignment_id', assignment.id)
         .order('created_at', { ascending: false });
       
       if (error) throw error;

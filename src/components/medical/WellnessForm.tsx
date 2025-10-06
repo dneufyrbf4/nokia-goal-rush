@@ -29,11 +29,24 @@ export function WellnessForm({ playerId, onSubmit, skipPlayerIdValidation = fals
       
       setIsLoading(true);
       try {
+        // Get the active assignment for this player
+        const { data: assignment } = await supabase
+          .from('player_category_assignments')
+          .select('id')
+          .eq('player_id', playerId)
+          .is('end_date', null)
+          .maybeSingle();
+
+        if (!assignment) {
+          setIsLoading(false);
+          return;
+        }
+
         const today = new Date().toISOString().split('T')[0];
         const { data, error } = await supabase
           .from('wellness_responses')
           .select('*')
-          .eq('player_id', playerId)
+          .eq('player_assignment_id', assignment.id)
           .eq('response_date', today)
           .maybeSingle();
 
@@ -96,18 +109,30 @@ export function WellnessForm({ playerId, onSubmit, skipPlayerIdValidation = fals
         
         error = updateError;
       } else {
+        // Get the active assignment for this player
+        const { data: assignment } = await supabase
+          .from('player_category_assignments')
+          .select('id')
+          .eq('player_id', playerId)
+          .is('end_date', null)
+          .maybeSingle();
+
         // Crear nueva respuesta
+        const insertData: any = {
+          player_id: skipPlayerIdValidation ? null : playerId,
+          sleep_quality: sleepQuality[0],
+          muscle_soreness: muscleSoreness[0],
+          fatigue_level: fatigueLevel[0],
+          stress_level: stressLevel[0],
+        };
+
+        if (assignment) {
+          insertData.player_assignment_id = assignment.id;
+        }
+
         const { data: newResponse, error: insertError } = await supabase
           .from('wellness_responses')
-          .insert([
-            {
-              player_id: skipPlayerIdValidation ? null : playerId,
-              sleep_quality: sleepQuality[0],
-              muscle_soreness: muscleSoreness[0],
-              fatigue_level: fatigueLevel[0],
-              stress_level: stressLevel[0],
-            }
-          ])
+          .insert([insertData])
           .select()
           .single();
         

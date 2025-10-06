@@ -28,10 +28,22 @@ export function MedicalDocuments({ playerId }: MedicalDocumentsProps) {
   const { data: documents = [], isLoading } = useQuery({
     queryKey: ["medical-documents", playerId],
     queryFn: async () => {
+      // Get the active assignment for this player
+      const { data: assignment } = await supabase
+        .from('player_category_assignments')
+        .select('id')
+        .eq('player_id', playerId)
+        .is('end_date', null)
+        .maybeSingle();
+
+      if (!assignment) {
+        return [];
+      }
+
       const { data, error } = await supabase
         .from("medical_documents")
         .select("*")
-        .eq("player_id", playerId)
+        .eq("player_assignment_id", assignment.id)
         .order("created_at", { ascending: false });
 
       if (error) {
@@ -50,6 +62,18 @@ export function MedicalDocuments({ playerId }: MedicalDocumentsProps) {
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
+      // Get the active assignment for this player
+      const { data: assignment } = await supabase
+        .from('player_category_assignments')
+        .select('id')
+        .eq('player_id', playerId)
+        .is('end_date', null)
+        .maybeSingle();
+
+      if (!assignment) {
+        throw new Error("No se encontró asignación activa para este jugador");
+      }
+
       const fileExt = file.name.split('.').pop();
       const fileName = `${playerId}/${Date.now()}.${fileExt}`;
 
@@ -70,6 +94,7 @@ export function MedicalDocuments({ playerId }: MedicalDocumentsProps) {
         .from("medical_documents")
         .insert({
           player_id: playerId,
+          player_assignment_id: assignment.id,
           document_name: file.name,
           document_url: urlData.publicUrl,
           document_type: file.type,

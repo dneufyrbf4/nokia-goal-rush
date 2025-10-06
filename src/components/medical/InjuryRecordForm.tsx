@@ -47,10 +47,29 @@ export function InjuryRecordForm({ playerId, onSubmit }: InjuryRecordFormProps) 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
+      // Get the active assignment for this player
+      const { data: assignment, error: assignmentError } = await supabase
+        .from('player_category_assignments')
+        .select('id')
+        .eq('player_id', playerId)
+        .is('end_date', null)
+        .single();
+
+      if (assignmentError) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "No se pudo encontrar la asignación activa del jugador",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       const { error } = await supabase
         .from('injury_records')
         .insert({
           player_id: playerId,
+          player_assignment_id: assignment.id,
           date: values.date,
           injury_description: values.injury_description,
           recommended_treatment: values.recommended_treatment,

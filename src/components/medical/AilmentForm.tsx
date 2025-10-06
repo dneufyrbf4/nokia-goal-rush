@@ -60,7 +60,20 @@ export function AilmentForm({ playerId, onSubmit, skipPlayerIdValidation = false
 
       // Only add player_id if we're not skipping validation and there's a valid playerId
       if (!skipPlayerIdValidation && playerId) {
-        record.player_id = playerId;
+        // Get the active assignment for this player
+        const { data: assignment } = await supabase
+          .from('player_category_assignments')
+          .select('id')
+          .eq('player_id', playerId)
+          .is('end_date', null)
+          .maybeSingle();
+
+        if (assignment) {
+          record.player_id = playerId;
+          record.player_assignment_id = assignment.id;
+        } else {
+          record.player_id = playerId;
+        }
       }
 
       console.log("Inserting ailment record:", record);

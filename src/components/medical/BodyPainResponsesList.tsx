@@ -15,10 +15,22 @@ export function BodyPainResponsesList({ playerId }: BodyPainResponsesListProps) 
   const { data: responses = [], isLoading, refetch } = useQuery({
     queryKey: ["body-pain-responses", playerId],
     queryFn: async () => {
+      // Get the active assignment for this player
+      const { data: assignment } = await supabase
+        .from('player_category_assignments')
+        .select('id')
+        .eq('player_id', playerId)
+        .is('end_date', null)
+        .maybeSingle();
+
+      if (!assignment) {
+        return [];
+      }
+
       const { data, error } = await supabase
         .from('body_pain_responses')
         .select('*')
-        .eq('player_id', playerId)
+        .eq('player_assignment_id', assignment.id)
         .order('created_at', { ascending: false });
       
       if (error) throw error;

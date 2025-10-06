@@ -45,17 +45,23 @@ export function AilmentsList({ playerId, hideStatusColumn = false }: AilmentsLis
     queryKey: ["ailments", playerId],
     queryFn: async () => {
       try {
-        let query = supabase
-          .from('ailments')
-          .select('*')
-          .order('date', { ascending: false });
-        
-        // Only filter by player_id if a valid playerId is provided
-        if (playerId) {
-          query = query.eq('player_id', playerId);
+        // Get the active assignment for this player
+        const { data: assignment } = await supabase
+          .from('player_category_assignments')
+          .select('id')
+          .eq('player_id', playerId)
+          .is('end_date', null)
+          .maybeSingle();
+
+        if (!assignment) {
+          return [];
         }
 
-        const { data, error } = await query;
+        const { data, error } = await supabase
+          .from('ailments')
+          .select('*')
+          .eq('player_assignment_id', assignment.id)
+          .order('date', { ascending: false });
 
         if (error) {
           console.error("Error fetching ailments:", error);
